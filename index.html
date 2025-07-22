@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>RGB Color Picker</title>
+        <link rel="stylesheet" href="style.css">
+        <script src="script.js" defer></script>
+    </head>
+    <body>
+            <h1 id="EpicTitle">RGB Color Picker</h1>
+            <div class="colorPreview" id="colorPreview"></div>
+            <h1 id="ColorValueRGB">rgb(0, 0, 0)</h1>
+            <button id="CopyButton">Copy Color</button>
+            <div id="SlidersDiv" class="SlidersDiv">
+                <input class="Slider" id="RedSlider" type="range" min="0" max="255" step="1">
+                <input class="Slider" id="GreenSlider" type="range" min="0" max="255" step="1">
+                <input class="Slider" id="BlueSlider" type="range" min="0" max="255" step="1">
+                <div class="toggleContainer">
+                    <p id="Text">Show HEX Code</p>
+                    <label class="toggle">
+                        <input type="checkbox" id="modeToggle" />
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+    </body>
+</html>
