@@ -31,9 +31,9 @@ function updateUI() {
   ColorPreview.style.backgroundColor = rgbString;
   ValueRGB.textContent = HexMode ? RGBToHEX(r, g, b) : rgbString;
 
-  //RedSlider.style.setProperty("--track-color", `linear-gradient(to right, rgb(0, ${g}, ${b}), rgb(255, ${g}, ${b}))`);
-  //GreenSlider.style.setProperty("--track-color", `linear-gradient(to right, rgb(${r}, 0, ${b}), rgb(${r}, 255, ${b}))`);
-  //BlueSlider.style.setProperty("--track-color", `linear-gradient(to right, rgb(${r}, ${g}, 0), rgb(${r}, ${g}, 255))`);
+  RedSlider.style.setProperty("--track-color", `linear-gradient(to right, rgb(0, ${g}, ${b}), rgb(255, ${g}, ${b}))`);
+  GreenSlider.style.setProperty("--track-color", `linear-gradient(to right, rgb(${r}, 0, ${b}), rgb(${r}, 255, ${b}))`);
+  BlueSlider.style.setProperty("--track-color", `linear-gradient(to right, rgb(${r}, ${g}, 0), rgb(${r}, ${g}, 255))`);
 }
 
 function RGBToHEX(r, g, b) {
