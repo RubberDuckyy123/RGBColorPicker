@@ -11,6 +11,17 @@ body {
   overflow: hidden;
 }
 
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  width: 100%;
+}
+
 h1 {
   margin: 0.5em;
   text-align: center;
