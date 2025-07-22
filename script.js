@@ -42,6 +42,8 @@ function RGBToHEX(r, g, b) {
 }
 
 // Event delegation for sliders and toggle
+let rafPending = false;
+
 SliderDiv.addEventListener("input", (event) => {
   const target = event.target;
 
@@ -50,7 +52,13 @@ SliderDiv.addEventListener("input", (event) => {
     localStorage.setItem("HexMode", HexMode.toString());
   }
 
-  updateUI();
+  if (!rafPending) {
+    rafPending = true;
+    requestAnimationFrame(() => {
+      updateUI();
+      rafPending = false;
+    });
+  }
 });
 
 // Save to localStorage when sliders are released
