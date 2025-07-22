@@ -1,135 +1,92 @@
-const RedSlider = document.getElementById("RedSlider")
-const GreenSlider = document.getElementById("GreenSlider")
-const BlueSlider = document.getElementById("BlueSlider")
-const SliderDiv = document.getElementById("SlidersDiv")
-const ValueRGB = document.getElementById("ColorValueRGB")
-const ColorPreview = document.getElementById("colorPreview")
-const Title = document.getElementById("EpicTitle")
-const ModeToggle = document.getElementById("modeToggle")
-const CopyButton = document.getElementById("CopyButton")
+const RedSlider = document.getElementById("RedSlider");
+const GreenSlider = document.getElementById("GreenSlider");
+const BlueSlider = document.getElementById("BlueSlider");
+const SliderDiv = document.getElementById("SlidersDiv");
+const ValueRGB = document.getElementById("ColorValueRGB");
+const ColorPreview = document.getElementById("colorPreview");
+const ModeToggle = document.getElementById("modeToggle");
+const CopyButton = document.getElementById("CopyButton");
 
-const RedValue = localStorage.getItem("RedValue")
-if (RedValue) {
-  RedSlider.value = Number(RedValue)
-}
-
-const GreenValue = localStorage.getItem("GreenValue")
-if (GreenValue) {
-  GreenSlider.value = Number(GreenValue)
-}
-
-const BlueValue = localStorage.getItem("BlueValue")
-if (BlueValue) {
-  BlueSlider.value = Number(BlueValue)
-}
-
-let HexMode = false
-
-const SavedHexMode = localStorage.getItem("HexMode")
-if (SavedHexMode !== null) {
-  const ToBool = SavedHexMode === "true"
-  HexMode = ToBool
-  ModeToggle.checked = ToBool
-}
-
-// Update the value display once at the end using actual HexMode state
-const CurrentColor = `rgb(${RedSlider.value}, ${GreenSlider.value}, ${BlueSlider.value})`
-if (HexMode) {
-  ValueRGB.textContent = RGBToHEX(RedSlider.value, GreenSlider.value, BlueSlider.value)
-} else {
-  ValueRGB.textContent = CurrentColor
-}
-
-ColorPreview.style.backgroundColor = CurrentColor
-
-const r = RedSlider.value
-const g = GreenSlider.value
-const b = BlueSlider.value
+let HexMode = localStorage.getItem("HexMode") === "true";
+ModeToggle.checked = HexMode;
 
 let copyTimeout = null;
 
-RedSlider.style.setProperty("--track-color", `linear-gradient(to right, rgb(0, ${g}, ${b}), rgb(255, ${g}, ${b}))`)
-GreenSlider.style.setProperty("--track-color", `linear-gradient(to right, rgb(${r}, 0, ${b}), rgb(${r}, 255, ${b}))`)
-BlueSlider.style.setProperty("--track-color", `linear-gradient(to right, rgb(${r}, ${g}, 0), rgb(${r}, ${g}, 255))`)
-
-RedSlider.style.setProperty("--cursor-state", "grab")
-GreenSlider.style.setProperty("--cursor-state", "grab")
-BlueSlider.style.setProperty("--cursor-state", "grab")
-
-SliderDiv.addEventListener('input', function(event) {
-    if (event.target.type === "checkbox") {
-      if (ModeToggle.checked) {
-        HexMode = true
-
-      } else {
-        HexMode = false
-      }
-      localStorage.setItem("HexMode", HexMode.toString())
-    }
-    const CurrentColor = `rgb(${RedSlider.value}, ${GreenSlider.value}, ${BlueSlider.value})`
-    if (HexMode == true) {
-      ValueRGB.textContent = RGBToHEX(RedSlider.value, GreenSlider.value, BlueSlider.value)
-    } else {
-      ValueRGB.textContent = CurrentColor
-    }
-    ColorPreview.style.backgroundColor = CurrentColor
-    
-
-    UpdateSliderGradients()
-})
-
-SliderDiv.addEventListener('change', (event) => {
-  if (event.target.type === "range") {
-    const id = event.target.id
-    const clr = id.replace("Slider", "Value")
-    console.log(clr)
-    const element = window[id]
-    console.log(element)
-    localStorage.setItem(clr.toString(), element.value.toString())
+// Restore saved RGB values
+["Red", "Green", "Blue"].forEach(color => {
+  const savedValue = localStorage.getItem(`${color}Value`);
+  if (savedValue !== null) {
+    document.getElementById(`${color}Slider`).value = Number(savedValue);
   }
-})
+});
 
-SliderDiv.addEventListener('mousedown', () => {
-  RedSlider.style.setProperty("--cursor-state", "grabbing")
-  GreenSlider.style.setProperty("--cursor-state", "grabbing")
-  BlueSlider.style.setProperty("--cursor-state", "grabbing")
-})
+updateUI();
 
-SliderDiv.addEventListener('mouseup', () => {
-  RedSlider.style.setProperty("--cursor-state", "grab")
-  GreenSlider.style.setProperty("--cursor-state", "grab")
-  BlueSlider.style.setProperty("--cursor-state", "grab")
-})
+function updateUI() {
+  const r = Number(RedSlider.value);
+  const g = Number(GreenSlider.value);
+  const b = Number(BlueSlider.value);
+  const rgbString = `rgb(${r}, ${g}, ${b})`;
 
-function UpdateSliderGradients() {
-  const r = RedSlider.value
-  const g = GreenSlider.value
-  const b = BlueSlider.value
+  ColorPreview.style.backgroundColor = rgbString;
+  ValueRGB.textContent = HexMode ? RGBToHEX(r, g, b) : rgbString;
 
-  RedSlider.style.setProperty("--track-color", `linear-gradient(to right, rgb(0, ${g}, ${b}), rgb(255, ${g}, ${b}))`)
-  GreenSlider.style.setProperty("--track-color", `linear-gradient(to right, rgb(${r}, 0, ${b}), rgb(${r}, 255, ${b}))`)
-  BlueSlider.style.setProperty("--track-color", `linear-gradient(to right, rgb(${r}, ${g}, 0), rgb(${r}, ${g}, 255))`)
+  RedSlider.style.setProperty("--track-color", `linear-gradient(to right, rgb(0, ${g}, ${b}), rgb(255, ${g}, ${b}))`);
+  GreenSlider.style.setProperty("--track-color", `linear-gradient(to right, rgb(${r}, 0, ${b}), rgb(${r}, 255, ${b}))`);
+  BlueSlider.style.setProperty("--track-color", `linear-gradient(to right, rgb(${r}, ${g}, 0), rgb(${r}, ${g}, 255))`);
 }
 
 function RGBToHEX(r, g, b) {
-  const GetHex = n => Number(n).toString(16).padStart(2, '0')
-  return `#${GetHex(r)}${GetHex(g)}${GetHex(b)}`
+  const toHex = n => Number(n).toString(16).padStart(2, '0');
+  return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
 }
 
+// Event delegation for sliders and toggle
+SliderDiv.addEventListener("input", (event) => {
+  const target = event.target;
+
+  if (target === ModeToggle) {
+    HexMode = ModeToggle.checked;
+    localStorage.setItem("HexMode", HexMode.toString());
+  }
+
+  updateUI();
+});
+
+// Save to localStorage when sliders are released
+SliderDiv.addEventListener("change", (event) => {
+  const target = event.target;
+  if (target.type === "range") {
+    const id = target.id; // e.g., "RedSlider"
+    const color = id.replace("Slider", "Value"); // → "RedValue"
+    localStorage.setItem(color, target.value);
+  }
+});
+
+// Slider grab effect
+SliderDiv.addEventListener("mousedown", () => {
+  ["RedSlider", "GreenSlider", "BlueSlider"].forEach(id => {
+    document.getElementById(id).style.setProperty("--cursor-state", "grabbing");
+  });
+});
+
+SliderDiv.addEventListener("mouseup", () => {
+  ["RedSlider", "GreenSlider", "BlueSlider"].forEach(id => {
+    document.getElementById(id).style.setProperty("--cursor-state", "grab");
+  });
+});
+
+// Copy to clipboard button
 CopyButton.addEventListener("click", () => {
-  // Don't do anything if the timeout is already active
-  if (copyTimeout !== null) return;
+  if (copyTimeout) return;
 
-  navigator.clipboard.writeText(ValueRGB.textContent)
-    .then(() => {
-      CopyButton.textContent = "Copied!";
-
-      copyTimeout = setTimeout(() => {
-        CopyButton.textContent = "Copy";
-        copyTimeout = null; // Reset after it's done
-      }, 1000);
-    })
-    .catch(() => {
-      CopyButton.textContent = "Failed :(";
-    });
+  navigator.clipboard.writeText(ValueRGB.textContent).then(() => {
+    CopyButton.textContent = "Copied!";
+    copyTimeout = setTimeout(() => {
+      CopyButton.textContent = "Copy";
+      copyTimeout = null;
+    }, 1000);
+  }).catch(() => {
+    CopyButton.textContent = "Failed :(";
+  });
 });
